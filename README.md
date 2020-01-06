@@ -1,5 +1,5 @@
 # cnvkit_pipeline
-call copy number from WES(WXS)
+Call copy number from WES(WXS)
 
 
 ## Install
