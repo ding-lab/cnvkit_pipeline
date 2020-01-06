@@ -25,3 +25,8 @@ To run the segmentation algorithm CBS, you will need to also install the R depen
 
 ```
 
+
+
+
+## Contact
+Hua Sun (hua.sun@wustl.edu)
