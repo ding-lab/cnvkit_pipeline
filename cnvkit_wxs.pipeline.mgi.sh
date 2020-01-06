@@ -295,30 +295,3 @@ fi
 
 
 
-##============================================##
-##          		Testing purpose
-##============================================##
-
-# make with NO CONTROL samples (flat reference)
-# the accuracy is low compared with pool normal
-if [[ "$FLAG" = "ref-flat" ]]; then
-  sh $LSFSUB 8 1 refcnn_noControl_wxs "bash $SDIR/2_make_ref_flat_cnn.sh $CONFIG $OUTDIR"
-  exit
-fi
-
-
-## run full steps
-if [[ "$FLAG" = "test-full" ]]; then
-	sh $LSFSUB 4 1 cnv_wxs_fullstep "bash $SDIR/run.cnvkit_wxs.batch.v1.sh -C $CONFIG -B $bamDir -O $OUTDIR"
-fi
-
-
-## run full-noControl steps
-# no pool normals and low accuracy
-if [[ "$FLAG" = "test-full-noControl" ]]; then
-	sh $LSFSUB 4 1 cnv_wxs_cnvGene "bash $SDIR/run.cnvkit_wxs.noControl.batch.v1.sh -C $CONFIG -B $bamDir -O $OUTDIR"
-fi
-
-
-
-
