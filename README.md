@@ -29,7 +29,7 @@ sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-tn -O tumorNormal_cnv
 ##------ Tumor-Only
 
 # make pool normal
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D `pwd`/softlink_bams -O `pwd`/poolNormal
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D ./softlink_bams -O ./poolNormal
 sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F ref -O poolNormal
 
 
