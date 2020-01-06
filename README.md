@@ -11,13 +11,13 @@ The usage example
 
 Please set create and set "config.ini" file before using the pipeline. 
 
-##-------------- Simple run as pool samples
+##------ Simple run as pool samples
 
 bash subScripts/run.cnvkit_wxs.batch.v1.sh -C config.ini -B ./bamFolder -O ./result
 
 
 
-##-------------- Tumor-Normal
+##------ Tumor-Normal
 
 # run call-cnv
 sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tn -T tumorNor.wxs.table -D ./wxs/all_wxs_sampleBams -O ./tumorNormal_cnv
@@ -26,7 +26,7 @@ sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tn -T tumorNor.wxs.table -D
 sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-tn -O tumorNormal_cnv
 
 
-##-------------- Tumor-Only
+##------ Tumor-Only
 
 # make pool normal
 sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D `pwd`/softlink_bams -O `pwd`/poolNormal.v2
