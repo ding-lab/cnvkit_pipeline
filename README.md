@@ -2,6 +2,47 @@
 Call copy number from WES(WXS)
 
 
+## Usage
+
+```
+Call CNV - cnvkit - v0.96
+
+The usage example
+
+Please set create and set "config.ini" file before using the pipeline. 
+
+##-------------- Simple run as pool samples
+
+bash subScripts/run.cnvkit_wxs.batch.v1.sh -C config.ini -B ./bamFolder -O ./result
+
+
+
+##-------------- Tumor-Normal
+
+# run call-cnv
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tn -T tumorNor.wxs.table -D ./wxs/all_wxs_sampleBams -O ./tumorNormal_cnv
+
+# merge results
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-tn -O tumorNormal_cnv
+
+
+##-------------- Tumor-Only
+
+# make pool normal
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D `pwd`/softlink_bams -O `pwd`/poolNormal.v2
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F ref -O poolNormal.v2
+
+
+# call cnv from pool normal
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tumor -T tumorOnly.datafreeze.v2.sample -R poolNormal.v2/reference_normals.cnn -D /gscmnt/gc3021/dinglab/PDX/Analysis/integration-L2/1.set_filtered_bams/wxs/all_wxs_sampleBams -O tumorOnly_cnv
+
+
+# merge results
+sh ~/scripts/pipeline/cnvkit/cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-pool -O tumorOnly_cnv
+
+```
+
+
 ## Install
 
 ```
