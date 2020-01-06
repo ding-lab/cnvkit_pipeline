@@ -29,16 +29,16 @@ sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-tn -O tumorNormal_cnv
 ##------ Tumor-Only
 
 # make pool normal
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D `pwd`/softlink_bams -O `pwd`/poolNormal.v2
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F ref -O poolNormal.v2
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D `pwd`/softlink_bams -O `pwd`/poolNormal
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F ref -O poolNormal
 
 
 # call cnv from pool normal
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tumor -T tumorOnly.datafreeze.v2.sample -R poolNormal.v2/reference_normals.cnn -D /gscmnt/gc3021/dinglab/PDX/Analysis/integration-L2/1.set_filtered_bams/wxs/all_wxs_sampleBams -O tumorOnly_cnv
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tumor -T sampleList -R ./cnvkit/reference_normals.cnn -D ./wxs/all_wxs_sampleBams -O tumorOnly_cnv
 
 
 # merge results
-sh ~/scripts/pipeline/cnvkit/cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-pool -O tumorOnly_cnv
+sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-pool -O tumorOnly_cnv
 
 ```
 
