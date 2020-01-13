@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 11/9/2019
+# 11/9/2019; 1/13/2020
 
 # Usage
 # bash call_cnv.sh <config.ini> <name> <outDir>
@@ -27,14 +27,15 @@ $PYTHON3 $CNVKIT fix $OUTDIR/$NAME.T.targetcoverage.cnn $OUTDIR/$NAME.T.antitarg
 # add --min-variant-depth 20 11/8
 $PYTHON3 $CNVKIT segment $OUTDIR/$NAME.T.cnr --method cbs --drop-low-coverage --min-variant-depth 20 -o $OUTDIR/$NAME.T.cns
 
-# large bin >15kb 
-# Copy number variation detection in whole-genome sequencing data using the Bayesian information criterion
-# cutoff probe >=10
+# default bin >5kb
+# cutoff probe >10
 # chromosome      start   end     gene    log2    depth   probes  weight
-perl -i -ne '@F=split/\t/; $probe=$F[6]; $len=$F[2]-$F[1]; if($.==1){print}elsif($probe>=10 && $len>15000){print}' $OUTDIR/$NAME.T.cns
+perl -ne '@F=split/\t/; $probe=$F[6]; $len=$F[2]-$F[1]; if($.==1){print}elsif($probe>10 && $len>5000){print}' $OUTDIR/$NAME.T.cns > $OUTDIR/$NAME.T.filtered.cns
 
 
-$PYTHON3 $CNVKIT call $OUTDIR/$NAME.T.cns -m threshold -t=-1.1,-0.4,0.3,0.7 -o $OUTDIR/$NAME.T.call.cns
+# the -t=-1.1,-0.25,0.2,0.7 is too low-cutoff
+# best practise (since compared tumor vs pdx in different cutoff.)
+$PYTHON3 $CNVKIT call $OUTDIR/$NAME.T.filtered.cns -m threshold -t=-1.3,-0.4,0.3,0.9 -o $OUTDIR/$NAME.T.call.cns
 
 
 # chr1-22 (XY also removed because it had low accuracy)

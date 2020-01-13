@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Hua Sun
-# 11/9/2019
+# 11/9/2019; 1/13/2020
 
 #cnvkit v0.9.6
 
@@ -72,15 +72,15 @@ NAME=${filename%%.bam}
 # add --min-variant-depth 20 11/8
 $PYTHON3 $CNVKIT segment $OUT/$NAME.cnr --method cbs --drop-low-coverage --min-variant-depth 20 -o $OUT/$NAME.cns
 
-# large bin >15kb
-# cutoff probe >=10
+# default bin >5kb
+# cutoff probe >10
 # chromosome      start   end     gene    log2    depth   probes  weight
-perl -i -ne '@F=split/\t/; $probe=$F[6]; $len=$F[2]-$F[1]; if($.==1){print}elsif($probe>=10 && $len>15000){print}' $OUT/$NAME.cns
+perl -ne '@F=split/\t/; $probe=$F[6]; $len=$F[2]-$F[1]; if($.==1){print}elsif($probe>10 && $len>5000){print}' $OUT/$NAME.cns > $OUT/$NAME.filtered.cns
 
 
 # the -t=-1.1,-0.25,0.2,0.7 is too low-cutoff
 # best practise (since compared tumor vs pdx in different cutoff.)
-$PYTHON3 $CNVKIT call $OUT/$NAME.cns -m threshold -t=-1.1,-0.4,0.3,0.7 -o $OUT/$NAME.call.cns
+$PYTHON3 $CNVKIT call $OUT/$NAME.filtered.cns -m threshold -t=-1.3,-0.4,0.3,0.9 -o $OUT/$NAME.call.cns
 
 
 # chr1-22 (XY also removed because it had low accuracy)
