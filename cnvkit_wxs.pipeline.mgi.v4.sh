@@ -57,7 +57,7 @@
 
 
 # set default options
-CONFIG=/gscuser/hua.sun/scripts/cnvkit_wxs/config/config.gencode_grch38.mgi.ini
+CONFIG=/gscuser/hua.sun/scripts/cnvkit_wxs.v2/config/config.gencode_grch38.mgi.ini
 
 
 ## getOptions
