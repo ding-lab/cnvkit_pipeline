@@ -181,7 +181,7 @@ if [[ "$FLAG" = "tumorNormal" ]]; then
     sed '1d' $TABLE | while read id group normal tumor normalBam tumorBam
     do
         if [[ $id == "" ]];then continue; fi
-        sh $LSFSUB 8 1 tumNor_cn.${id} "bash $SDIR/cnvkit_wxs.tumor-normal.v2.sh -C $CONFIG -S $id -N $normalBam -T $tumorBam -O $OUTDIR"
+        sh $LSFSUB 8 1 tumNor_cn.${id} "bash $SDIR/cnvkit_wxs.tumorNormal.v2.sh -C $CONFIG -S $id -N $normalBam -T $tumorBam -O $OUTDIR"
     done
 fi
 
