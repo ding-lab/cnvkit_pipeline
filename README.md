@@ -1,46 +1,5 @@
-# cnvkit_pipeline
+# cnvkit_pipeline (beta v2)
 Call copy number from WES(WXS)
-
-
-## Usage
-
-```
-Call CNV - cnvkit - v0.96
-
-The usage example
-
-Please set create and set "config.ini" file before using the pipeline. 
-
-##------ Simple run as pool samples
-
-bash subScripts/run.cnvkit_wxs.batch.v1.sh -C config.ini -B ./bamFolder -O ./result
-
-
-
-##------ Tumor-Normal
-
-# run call-cnv
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tn -T tumorNor.wxs.table -D ./wxs/all_wxs_sampleBams -O ./tumorNormal_cnv
-
-# merge results
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-tn -O tumorNormal_cnv
-
-
-##------ Tumor-Only
-
-# make pool normal
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F cnn -D ./softlink_bams -O ./poolNormal
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F ref -O poolNormal
-
-
-# call cnv from pool normal
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F batch-tumor -T sampleList -R ./cnvkit/reference_normals.cnn -D ./wxs/all_wxs_sampleBams -O tumorOnly_cnv
-
-
-# merge results
-sh cnvkit_wxs.pipeline.mgi.sh -C config.ini -F merge-pool -O tumorOnly_cnv
-
-```
 
 
 ## Install
@@ -66,6 +25,41 @@ To run the segmentation algorithm CBS, you will need to also install the R depen
 
 ```
 
+
+## Usage
+
+```
+Call CNV - cnvkit - v0.96
+
+The usage example
+
+Please create and set "config.ini" before running the pipeline. 
+
+
+##------ General full pipeline
+sh src/cnvkit_wxs.general.pipeline.sh -C config.ini -B ./bamFolder -O ./result
+
+
+##------ Tumor-Normal
+# call cna
+sh src/cnvkit_wxs.tumorNormal.v2.sh -C config.ini -S sampleName -N normal.bam -T tumor.bam -O tunorNormal_results
+
+# merge results
+sh src/run.cnvkit.merge-results.tumor-normal.sh tunorNormal_results
+
+
+##------ Tumor-Only
+# call cna
+sh src/cnvkit_wxs.tumorOnly.v2.sh -C config.ini -N sampleName -B tumor.bam -R ref_normal.cnn -O tumorOnly_results
+
+# merge results
+sh src/run.cnvkit.merge-results.poolNor.sh tumorOnly_results
+
+
+##------ pipeline for mgi-server
+use 'cnvkit_wxs.pipeline.mgi.v4.sh' pipeline
+
+```
 
 
 
