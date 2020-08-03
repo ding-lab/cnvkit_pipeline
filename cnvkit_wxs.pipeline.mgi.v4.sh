@@ -105,7 +105,7 @@ fi
 ##============================================##
 
 if [[ "$FLAG" = "general" ]]; then
-    sh $LSFSUB 8 1 tumNor_cn.${id} bash $SDIR/cnvkit_wxs.general.pipeline.sh -C $CONFIG -B $bamDir -O $OUTDIR
+    sh $LSFSUB 16 1 cnvkit_general "bash $SDIR/cnvkit_wxs.general.pipeline.sh -C $CONFIG -B $bamDir -O $OUTDIR"
 fi
 
 
@@ -159,7 +159,7 @@ if [[ "$FLAG" = "tumorOnly" ]]; then
             echo "[Error] File not exists ... -> $sample - $bam" >&2
             continue
         fi
-        sh $LSFSUB 8 1 tumorOnly-batch.${sample} "bash $SDIR/cnvkit_wxs.perTumor4poolNormal.sh -N $sample -C $CONFIG -B $bam -R $PoolNorRef -O $OUTDIR"
+        sh $LSFSUB 8 1 tumorOnly.${sample} "bash $SDIR/cnvkit_wxs.tumorOnly.v2.sh -N $sample -C $CONFIG -B $bam -R $PoolNorRef -O $OUTDIR"
     done
 fi
 
@@ -181,7 +181,7 @@ if [[ "$FLAG" = "tumorNormal" ]]; then
     sed '1d' $TABLE | while read id group normal tumor normalBam tumorBam
     do
         if [[ $id == "" ]];then continue; fi
-        sh $LSFSUB 8 1 tumNor_cn.${id} bash $SDIR/cnvkit_wxs.tumor-normal.withoutPoolNor.sh -C $CONFIG -S $id -N $normalBam -T $tumorBam -O $OUTDIR
+        sh $LSFSUB 8 1 tumNor_cn.${id} "bash $SDIR/cnvkit_wxs.tumor-normal.v2.sh -C $CONFIG -S $id -N $normalBam -T $tumorBam -O $OUTDIR"
     done
 fi
 
