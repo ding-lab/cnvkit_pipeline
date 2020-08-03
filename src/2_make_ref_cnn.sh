@@ -14,6 +14,6 @@ if [ -e $OUTDIR/reference_normals.cnn ]; then
 fi
 
 
-# Make reference normal cnn
+# Make reference normal cnn by normals
 $PYTHON3 $CNVKIT reference $OUTDIR/*.N.*coverage.cnn -f $GENOME -o $OUTDIR/reference_normals.cnn
 
