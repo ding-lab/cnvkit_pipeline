@@ -16,9 +16,9 @@ if [ -e $OUTDIR/$NAME.targetcoverage.cnn ]; then
 fi
 
 # target	
-$PYTHON3 $CNVKIT coverage $BAM $GENOME_TARGET -o $OUTDIR/$NAME.targetcoverage.cnn
+$CNVKIT coverage $BAM $GENOME_TARGET -o $OUTDIR/$NAME.targetcoverage.cnn
 
 # antitarget
-$PYTHON3 $CNVKIT coverage $BAM $GENOME_ANTITARGET -o $OUTDIR/$NAME.antitargetcoverage.cnn
+$CNVKIT coverage $BAM $GENOME_ANTITARGET -o $OUTDIR/$NAME.antitargetcoverage.cnn
 
 

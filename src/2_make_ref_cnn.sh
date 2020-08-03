@@ -15,5 +15,5 @@ fi
 
 
 # Make reference normal cnn by normals
-$PYTHON3 $CNVKIT reference $OUTDIR/*.N.*coverage.cnn -f $GENOME -o $OUTDIR/reference_normals.cnn
+$CNVKIT reference $OUTDIR/*.N.*coverage.cnn -f $GENOME -o $OUTDIR/reference_normals.cnn
 

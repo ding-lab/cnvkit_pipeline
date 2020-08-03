@@ -81,23 +81,22 @@ $CNVKIT segment $OUT/$NAME.cnr --method cbs --drop-low-coverage --min-variant-de
 perl -ne '@F=split/\t/; $probe=$F[6]; $len=$F[2]-$F[1]; if($.==1){print}elsif($probe>10 && $len>10000){print}' $OUT/$NAME.cns > $OUT/$NAME.filtered.cns
 
 
-
-##=============== Add absolute CN ===============##
-# the -t=-1.1,-0.25,0.2,0.7 is too low-cutoff
-# best practise (since compared tumor vs pdx in different cutoff.)
-$CNVKIT call $OUT/$NAME.filtered.cns -m threshold -t=-1.3,-0.4,0.3,0.9 -o $OUT/$NAME.call.cns
-
-
 # chr1-22 (XY also removed because it had low accuracy)
 perl -ne 'print if (/^chr\d+/ || /^chromosome/ || /^\d+/)' $OUT/$NAME.cnr > $OUT/$NAME.chr.cnr
-perl -ne 'print if (/^chr\d+/ || /^chromosome/ || /^\d+/)' $OUT/$NAME.call.cns > $OUT/$NAME.call.chr.cns
-
+perl -ne 'print if (/^chr\d+/ || /^chromosome/ || /^\d+/)' $OUT/$NAME.filtered.cns > $OUT/$NAME.chr.cns
 
 
 ##=============== Plot cn pattern ===============##
 
 # draw plot DO NOT use *.noNeutral due to understand the neutral pattern
-$CNVKIT scatter $OUT/$NAME.chr.cnr -s $OUT/$NAME.call.chr.cns --y-min -4 --y-max 4 -w 1000000 -o $OUT/$NAME.call.chr.cns.pdf
+$CNVKIT scatter $OUT/$NAME.chr.cnr -s $OUT/$NAME.chr.cns --y-min -4 --y-max 4 -w 1000000 -o $OUT/$NAME.chr.cns.pdf
+
+
+
+##=============== Add absolute CN ===============##
+# the -t=-1.1,-0.25,0.2,0.7 is too low-cutoff
+# (DO NOT use cnvkit call cnr in v0.9.6)
+$CNVKIT call $OUT/$NAME.chr.cns -m threshold -t=-1.3,-0.4,0.3,0.9 -o $OUT/$NAME.chr.call.cns
 
 
 
@@ -106,16 +105,17 @@ $CNVKIT scatter $OUT/$NAME.chr.cnr -s $OUT/$NAME.call.chr.cns --y-min -4 --y-max
 #https://cnvkit.readthedocs.io/en/stable/reports.html
 # use *.call.chr.cns
 $CNVKIT genemetrics $OUT/$NAME.chr.cnr > $OUT/$NAME.ratio_gene.chr.tsv
-$CNVKIT genemetrics $OUT/$NAME.chr.cnr -s $OUT/$NAME.call.chr.cns -t 0.4 -m 5 > $OUT/$NAME.segment_gene.chr.tsv
+$CNVKIT genemetrics $OUT/$NAME.chr.cnr -s $OUT/$NAME.chr.call.cns -t 0.4 -m 5 > $OUT/$NAME.segment_gene.chr.tsv
 
 sed '1d' $OUT/$NAME.ratio_gene.chr.tsv | cut -f 1 | sort -u > $OUT/ratio-genes.txt
-sed '1d' $OUT/$NAME.ratio_gene.chr.tsv | cut -f 1 | sort -u > $OUT/segment-genes.txt
+sed '1d' $OUT/$NAME.segment_gene.chr.tsv | cut -f 1 | sort -u > $OUT/segment-genes.txt
 comm -12 $OUT/ratio-genes.txt $OUT/segment-genes.txt > $OUT/trusted-genes.txt
 
-${PYTHON3} ${SDIR}/extract.rows.py --list $OUT/trusted-genes.txt --matrix $OUT/$NAME.ratio_gene.chr.tsv --colName gene -o $OUT/$NAME.ratio_gene.trusted.tsv
-
+${PYTHON3} ${SDIR}/extract.rows.py --list $OUT/trusted-genes.txt --matrix $OUT/$NAME.ratio_gene.chr.tsv --colName gene -o $OUT/$NAME.ratio_gene.trusted.gainloss.tsv
+${PYTHON3} ${SDIR}/extract.rows.py --list $OUT/trusted-genes.txt --matrix $OUT/$NAME.segment_gene.chr.tsv --colName gene -o $OUT/$NAME.segment_gene.trusted.gainloss.tmp
+perl ${SDIR}/filter.cnvkit-geneLevel.pl $OUT/$NAME.segment_gene.trusted.gainloss.tmp > $OUT/$NAME.segment_gene.trusted.gainloss.tsv
 
 # remove process files
-rm -f $OUT/*target.bed $OUT/*targetcoverage.cnn $OUT/$NAME.call.cns $OUT/ratio-genes.txt $OUT/segment-genes.txt $OUT/trusted-genes.txt
+rm -f $OUT/*target.bed $OUT/*targetcoverage.cnn $OUT/*.tmp $OUT/segment-genes.txt $OUT/ratio-genes.txt
 
 

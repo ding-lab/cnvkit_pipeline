@@ -9,7 +9,7 @@
     remove too short length genes (<100bp)
     
     //input
-        sample   gene    chromosome  start   end log2 ...
+        gene    chromosome  start   end log2 ...
 
     perl filter.cnvkit-geneLevel.pl cnvkit.gene-level.tsv > output
 
@@ -27,16 +27,15 @@ my ($sample, $gene, $length);
 my %hash;
 foreach (@data) {
     my @arr = split/\t/;
-        
-    $sample = $arr[0];
-    $gene = $arr[1];
 
-    $length = $arr[4] - $arr[3];
+    $gene = $arr[0];
+
+    $length = $arr[3] - $arr[2];
 
     # filter short length genes
-    next if ($length < 100);
+    #next if ($length < 100);
             
-    my $key = "$sample:$gene";
+    my $key = "$gene";
         
     if (exists $hash{$key}){
         my $str = $hash{$key};
