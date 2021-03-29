@@ -21,7 +21,7 @@ mkdir -p $dir/tmp_dir
 
 i=0
 
-ls $dir/*/*.call.chr.cns | while read file
+ls $dir/*/*.chr.call.cns | while read file
 do
 	
 	i=$((i+1))
@@ -32,15 +32,15 @@ do
 	# header - segment
 	if [[ $i == 1 ]]; then 
 		head -n 1 $dir/${sample}/${sample}.*.chr.call.cns | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.segment.out
-	    head -n 1 $dir/${sample}/${sample}.*.segment_gene.chr.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.segment_gene.out
-	    head -n 1 $dir/${sample}/${sample}.*.ratio_gene.chr.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.ratio_gene.out
+	    head -n 1 $dir/${sample}/${sample}.*segment_gene.trusted.gainloss.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.segment_gene.out
+	    #head -n 1 $dir/${sample}/${sample}.*.ratio_gene.chr.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.ratio_gene.out
 	fi 
 
-	# *.call.chr.cns
+	# *.chr.call.cns
 	sed '1d' $dir/${sample}/${sample}.*.chr.call.cns | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.chr.call.cns
 	
 	# *.T.call.chr.segment_gene.tsv
-	sed '1d' $dir/${sample}/${sample}.*.ratio_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.ratio_gene.trusted.gainloss.tsv
+	#sed '1d' $dir/${sample}/${sample}.*.ratio_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.ratio_gene.trusted.gainloss.tsv
 	sed '1d' $dir/${sample}/${sample}.*.segment_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.segment_gene.trusted.gainloss.tsv
 
 done
@@ -51,7 +51,7 @@ cat $dir/tmp_dir/head.segment.out $dir/tmp_dir/*.chr.call.cns > $dir/cnvkit.segm
 
 # merge gene-level
 cat $dir/tmp_dir/head.segment_gene.out $dir/tmp_dir/*.segment_gene.trusted.gainloss.tsv > $dir/cnvkit.segment_gene.trusted.gainloss.mergedSamples.tsv
-cat $dir/tmp_dir/head.ratio_gene.out $dir/tmp_dir/*.ratio_gene.trusted.gainloss.tsv > $dir/cnvkit.ratio_gene.trusted.gainloss.mergedSamples.tsv
+#cat $dir/tmp_dir/head.ratio_gene.out $dir/tmp_dir/*.ratio_gene.trusted.gainloss.tsv > $dir/cnvkit.ratio_gene.trusted.gainloss.mergedSamples.tsv
 
 
 

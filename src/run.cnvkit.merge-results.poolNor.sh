@@ -30,16 +30,17 @@ do
 	# header - segment
 	if [[ $i == 1 ]]; then 
 	    head -n 1 $dir/${sample}.T.chr.call.cns | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.segment.out
-	    head -n 1 $dir/${sample}.T.segment_gene.chr.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.segment_gene.out
-	    head -n 1 $dir/${sample}.T.ratio_gene.chr.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.ratio_gene.out
+	    head -n 1 $dir/${sample}.T.segment_gene.trusted.gainloss.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.segment_gene.out
+	    #head -n 1 $dir/${sample}.T.ratio_gene.chr.tsv | perl -pe 's/^/sample\t/ if $.==1' > $dir/tmp_dir/head.ratio_gene.out
 	fi 
     
-	# *.T.call.chr.cns
+	# *.T.chr.call.cns
 	sed '1d' $dir/${sample}.T.chr.call.cns | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.chr.call.cns
 	
 	# *.T.call.chr.segment_gene.tsv
-	sed '1d' $dir/${sample}.T.segment_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.segment_gene.chr.tsv
-	sed '1d' $dir/${sample}.T.ratio_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.ratio_gene.chr.tsv
+	#sed '1d' $dir/${sample}.T.ratio_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.ratio_gene.chr.tsv
+	sed '1d' $dir/${sample}.T.segment_gene.trusted.gainloss.tsv | perl -pe 's/^/'$sample'\t/' > $dir/tmp_dir/$sample.segment_gene.trusted.gainloss.tsv
+
 
 done
 
@@ -47,8 +48,8 @@ done
 cat $dir/tmp_dir/head.segment.out $dir/tmp_dir/*.chr.call.cns > $dir/cnvkit.segment.mergedSamples.tsv
 
 # merge gene-level
+#cat $dir/tmp_dir/head.ratio_gene.out $dir/tmp_dir/*.ratio_gene.trusted.gainloss.tsv > $dir/cnvkit.ratio_gene.trusted.gainloss.mergedSamples.tsv
 cat $dir/tmp_dir/head.segment_gene.out $dir/tmp_dir/*.segment_gene.trusted.gainloss.tsv > $dir/cnvkit.segment_gene.trusted.gainloss.mergedSamples.tsv
-cat $dir/tmp_dir/head.ratio_gene.out $dir/tmp_dir/*.ratio_gene.trusted.gainloss.tsv > $dir/cnvkit.ratio_gene.trusted.gainloss.mergedSamples.tsv
 
 
 

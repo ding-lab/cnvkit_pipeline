@@ -1,15 +1,17 @@
 =head1
     
     Hua Sun
-    11/9/2019;3/5/2020
+    11/9/2019;3/5/2020;2020-10-15
     
-    remove duplicated genes from cnvkit gene-level file
+    1.Remove duplicated genes from cnvkit gene-level file
         keep gene from dup.
             - take long length one & high segment_weight
-    remove too short length genes (<100bp)
+
+    2.Remove cn==2 genes (it happened due to different cutoff in cnvkit e.g. -t 1.1,-0.25,0.2,0.7)
+
     
     //input
-        gene    chromosome  start   end log2 ...
+        gene    chromosome      start   end     log2    depth   weight  cn      n_bins  segment_weight  segment_probes
 
     perl filter.cnvkit-geneLevel.pl cnvkit.gene-level.tsv > output
 
@@ -23,17 +25,19 @@ my $file = shift;
 my $head = `head -n 1 $file`;
 my @data = `sed '1d' $file | sort -k1,1 -k2,2`;
 
-my ($sample, $gene, $length);
+my ($sample, $gene, $length, $cn);
 my %hash;
 foreach (@data) {
     my @arr = split/\t/;
 
     $gene = $arr[0];
+    $length = $arr[3] - $arr[2];  # end - start
 
-    $length = $arr[3] - $arr[2];
 
-    # filter short length genes
-    #next if ($length < 100);
+    # filter cn==2 genes
+    $cn = $arr[7];
+    next if ($cn==2);
+
             
     my $key = "$gene";
         
