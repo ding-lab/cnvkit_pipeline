@@ -3,7 +3,7 @@
 
 #########################################################################
 # Hua Sun
-# v4 8/2/2020
+# v4 2020-08-02; 2020-11-02
 
 
 ##====== run general full pipeline from bam-folder
@@ -54,14 +54,16 @@
 #########################################################################
 
 
-
-
 # set default options
-CONFIG=/path/config.ini
+CONFIG=/gscuser/hua.sun/scripts/cnvkit_wxs.v2/config/config.gencode_grch38.mgi.ini
+
 
 
 ## getOptions
-while getopts "F:C:T:D:R:O:" opt; do
+parameter='-1.3,-0.4,0.3,0.9'
+ratio=0.4
+
+while getopts "F:C:T:D:R:p:r:O:" opt; do
   case $opt in
     F)
       FLAG=$OPTARG
@@ -77,6 +79,12 @@ while getopts "F:C:T:D:R:O:" opt; do
       ;;
     R)
       PoolNorRef=$OPTARG
+      ;;
+    p)
+      parameter=$OPTARG
+      ;;
+    r)
+      ratio=$OPTARG
       ;;
     O)
       OUTDIR=$OPTARG
@@ -119,7 +127,7 @@ fi
 # prepare file for call target cnv (if the reference version different, then run this step)
 if [[ "$FLAG" = "bed" ]]; then
     echo "[INFO] Prepare reference for CNVkit ..."
-    sh $LSFSUB 8 1 cnn_wxs.genome "bash $SDIR/0_createGenomeBed.sh $CONFIG"
+    sh $LSFSUB 16 1 cnn_wxs.genome "bash $SDIR/0_createGenomeBed.sh $CONFIG"
     exit
 fi
 
@@ -131,7 +139,7 @@ if [[ "$FLAG" = "cnn" ]]; then
         fileName=${bam##*/}
         name=${fileName%.bam}
         # submit job to research-hpc
-        sh $LSFSUB 8 1 cnn_wxs.$name "bash $SDIR/1_call_cnn.sh $CONFIG $name $bam $OUTDIR"
+        sh $LSFSUB 16 1 cnn_wxs.$name "bash $SDIR/1_call_cnn.sh $CONFIG $name $bam $OUTDIR"
     done
   
     exit
@@ -141,7 +149,7 @@ fi
 ## run step-2
 # make ref.cnn by merging all of *.cnn
 if [[ "$FLAG" = "ref" ]]; then
-    sh $LSFSUB 8 1 refcnn_wxs "bash $SDIR/2_make_ref_cnn.sh $CONFIG $OUTDIR"
+    sh $LSFSUB 16 1 refcnn_wxs "bash $SDIR/2_make_ref_cnn.sh $CONFIG $OUTDIR"
     exit
 fi
 
@@ -154,12 +162,16 @@ fi
 
 ## I) call-full-tumor-only
 if [[ "$FLAG" = "tumorOnly" ]]; then
-    cat $TABLE | while read sample bam; do
+    sed '1d' $TABLE | cut -f 1-3 | while read sample datatype bam; do
         if [ ! -e $bam ];then
             echo "[Error] File not exists ... -> $sample - $bam" >&2
             continue
         fi
-        sh $LSFSUB 8 1 tumorOnly.${sample} "bash $SDIR/cnvkit_wxs.tumorOnly.v2.sh -N $sample -C $CONFIG -B $bam -R $PoolNorRef -O $OUTDIR"
+        if [[ $sample == '' ]];then
+            echo "[Error] Detected empty sample name row ..." >&2
+            continue
+        fi
+        sh $LSFSUB 16 1 tumorOnly.${sample} "bash $SDIR/cnvkit_wxs.tumorOnly.v2.sh -N $sample -C $CONFIG -p ${parameter} -r ${ratio} -B $bam -R $PoolNorRef -O $OUTDIR"
     done
 fi
 
@@ -178,10 +190,10 @@ fi
 
 ## I) tumor-normal pair samples - call cnv full pipeline
 if [[ "$FLAG" = "tumorNormal" ]]; then
-    sed '1d' $TABLE | while read id group normal tumor normalBam tumorBam
+    sed '1d' $TABLE | while read id datatype group normal tumor normalBam tumorBam
     do
         if [[ $id == "" ]];then continue; fi
-        sh $LSFSUB 8 1 tumNor_cn.${id} "bash $SDIR/cnvkit_wxs.tumorNormal.v2.sh -C $CONFIG -S $id -N $normalBam -T $tumorBam -O $OUTDIR"
+        sh $LSFSUB 16 1 tumNor_cn.${id} "bash $SDIR/cnvkit_wxs.tumorNormal.v2.sh -C $CONFIG -p ${parameter} -r ${ratio} -S $id -N $normalBam -T $tumorBam -O $OUTDIR"
     done
 fi
 
