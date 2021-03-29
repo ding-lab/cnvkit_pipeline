@@ -56,7 +56,7 @@ sh src/cnvkit_wxs.tumorOnly.v2.sh -C config.ini -N sampleName -B tumor.bam -R re
 sh src/run.cnvkit.merge-results.poolNor.sh tumorOnly_results
 
 
-##------ pipeline for mgi-server
+##------ Pipeline for batch data (mgi-server version)
 use 'cnvkit_wxs.pipeline.mgi.v4.sh' pipeline
 
 ## Tumor-Normal
