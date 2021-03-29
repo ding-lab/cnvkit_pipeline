@@ -59,6 +59,27 @@ sh src/run.cnvkit.merge-results.poolNor.sh tumorOnly_results
 ##------ pipeline for mgi-server
 use 'cnvkit_wxs.pipeline.mgi.v4.sh' pipeline
 
+## Tumor-Normal
+* tumorNormal.table
+  ID  DataType Group  Normal  Tumor  Normal_bam  Tumor_bam
+
+# call cnv
+sh cnvkit_wxs.pipeline.mgi.v4.sh -F tumorNormal -T tumorNormal.table -O cnvkit_tumorNormal -C config.ini
+            
+# merge results
+sh cnvkit_wxs.pipeline.mgi.v4.sh -F merge-tn -O cnvkit_tumorNormal
+
+
+## Tumor-Only
+* tumor-only.table
+  SampleID DataType BAM
+
+# call cnv
+sh cnvkit_wxs.pipeline.mgi.v4.sh -F tumorOnly -T tumor-only.table -R ./poolNormal/reference_normals.cnn -O cnv_tumorOnly -C config.ini 
+
+# merge results
+sh cnvkit_wxs.pipeline.mgi.v4.sh -F merge-pool -O cnv_tumorOnly
+
 ```
 
 
