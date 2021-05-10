@@ -7,7 +7,7 @@
     Only extract the first sample gene and remove duplicated sample genes
 
 
-    perl cnvkit_seg2gene.pl cnvkit_segment.cnv -o cnvkit_seg.gene.out
+    perl cnvkit_seg2gene.pl cnvkit_segment.call.tsv -o cnvkit_seg.gene.out
 
     // cnvkit_segment.cnv
     sample  chromosome  start   end gene    log2    cn  depth   probes  weight
