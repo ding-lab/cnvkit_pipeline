@@ -80,6 +80,10 @@ sh cnvkit_wxs.pipeline.mgi.v4.sh -F tumorOnly -T tumor-only.table -R ./poolNorma
 # merge results
 sh cnvkit_wxs.pipeline.mgi.v4.sh -F merge-pool -O cnv_tumorOnly
 
+
+# segment-level to gene-level (input is the merged tumor-only or tumor-normal segment file.)
+perl src/cnvkit_seg2gene.v2.pl merged.cnvkit_segment.tsv -o cnvkit_seg.gene.out
+
 ```
 
 
