@@ -9,7 +9,7 @@
 
     perl cnvkit_seg2gene.pl cnvkit_segment.call.tsv -o cnvkit_seg.gene.out
 
-    // cnvkit_segment.cnv
+    // cnvkit_segment.call.tsv
     sample  chromosome  start   end gene    log2    cn  depth   probes  weight
     
     // output
