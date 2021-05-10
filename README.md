@@ -1,4 +1,4 @@
-# cnvkit_pipeline (beta v2)
+# cnvkit_pipeline
 Call copy number from WES(WXS)
 
 
